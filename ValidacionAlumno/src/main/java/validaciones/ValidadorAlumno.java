@@ -1,5 +1,5 @@
 package validaciones;
-
+ 
 import java.util.Collection;
 import java.util.Date;
 
@@ -57,10 +57,24 @@ public class ValidadorAlumno
         return promedio;
     }
     //--------------------------------------------------------------------------
-    public static boolean fechaValida(Date fecha)
+     public static boolean fechaValida(Date fecha)
     {
-        // Válido si no es nula y tampoco es una fecha futura
-        return fecha != null && !fecha.after(new Date());
+        if (fecha == null)
+        {
+            return false;
+        }
+        Date hoy = new Date();
+        java.text.SimpleDateFormat formato = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        formato.setLenient(false);
+        try
+        {
+            Date fechaSinHora = formato.parse(formato.format(fecha));
+            Date hoySinHora = formato.parse(formato.format(hoy));
+            return !fechaSinHora.after(hoySinHora);
+        } catch (java.text.ParseException e)
+        {
+            return false;
+        }
     }
     //--------------------------------------------------------------------------
     public static boolean listaValida(Collection<?> lista)
