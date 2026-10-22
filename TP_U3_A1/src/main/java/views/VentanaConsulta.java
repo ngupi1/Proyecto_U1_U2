@@ -191,12 +191,25 @@ public class VentanaConsulta extends javax.swing.JFrame
             );
             return;
         }
+        String materiasTexto = "";
+            if (alumno.getMateriasSeleccionadas() != null) {
+                String limpia = alumno.getMateriasSeleccionadas().toString()
+                .replace("[", "")
+                .replace("]", "")
+                .trim();
+            if (!limpia.isEmpty()) {
+                materiasTexto = "\n- " + limpia.replace(", ", "\n- ").replace(",", "\n- ");
+            }
+        }
+        String fechaTexto = (alumno.getFechaNacimiento() != null)
+        ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(alumno.getFechaNacimiento())
+        : "";
         Object materias = alumno.getMateriasSeleccionadas();
         JOptionPane.showMessageDialog(this,
                 "Información adicional de " + alumno.getNombre() + "\n\n"
                 + "Correo: " + alumno.getCorreo() + "\n"
-                + "Fecha de nacimiento: " + alumno.getFechaNacimiento() + "\n"
-                + "Materias:" + materias.toString(),
+                + "Fecha de nacimiento: " + fechaTexto + "\n"
+                + "Materias: " + materiasTexto,
                 "Información adicional",
                 JOptionPane.INFORMATION_MESSAGE);
     }

@@ -409,7 +409,7 @@ public class VentanaAlta extends javax.swing.JFrame {
                     "Campo requerido",
                     JOptionPane.WARNING_MESSAGE);
             return;
-        }
+        } 
 
 // 2. VALIDAR FECHA INVÁLIDA
         if (fechaNacimiento == null)
