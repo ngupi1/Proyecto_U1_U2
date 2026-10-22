@@ -26,7 +26,6 @@ public class VentanaAlta extends javax.swing.JFrame {
         configurarMenuPestañas();
     }
 
-    
     private void configurarMenuPestañas() {
         jButtonAlta.setOpaque(true);
         jButtonAlta.setBackground(new java.awt.Color(70, 100, 170));
@@ -402,18 +401,16 @@ public class VentanaAlta extends javax.swing.JFrame {
                                 .getUiComponent()).getText().trim()
                         : "";
         // 1. VALIDAR FECHA OBLIGATORIA
-        if (fechaTexto.isEmpty())
-        {
+        if (fechaTexto.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "La fecha es obligatoria.",
                     "Campo requerido",
                     JOptionPane.WARNING_MESSAGE);
             return;
-        } 
+        }
 
 // 2. VALIDAR FECHA INVÁLIDA
-        if (fechaNacimiento == null)
-        {
+        if (fechaNacimiento == null) {
             JOptionPane.showMessageDialog(this,
                     "Ingrese una fecha válida.\nFormato: dd/MM/yyyy",
                     "Fecha incorrecta",
@@ -422,8 +419,7 @@ public class VentanaAlta extends javax.swing.JFrame {
         }
 
 // 3. VALIDAR FECHA FUTURA
-        if (!ValidadorAlumno.fechaValida(fechaNacimiento))
-        {
+        if (!ValidadorAlumno.fechaValida(fechaNacimiento)) {
             JOptionPane.showMessageDialog(this,
                     "La fecha de nacimiento no puede ser futura.",
                     "Fecha incorrecta",
@@ -467,6 +463,7 @@ public class VentanaAlta extends javax.swing.JFrame {
                 "Alumno guardado correctamente.",
                 "Alumno guardado",
                 JOptionPane.INFORMATION_MESSAGE);
+        log.info("Alumno registrado exitosamente. Control: {} | Nombre: {}", noControl, nombre);
         //----------------------------------------------------------------------
         // LIMPIA TODOS LOS CAMPOS
         limpiar();

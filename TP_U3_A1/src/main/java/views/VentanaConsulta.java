@@ -16,14 +16,12 @@ import org.slf4j.LoggerFactory;
 import validaciones.ValidadorAlumno;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class VentanaConsulta extends javax.swing.JFrame
-{
+public class VentanaConsulta extends javax.swing.JFrame {
 
     private AlumnoController controllerConsulta;
     private static final Logger log = LoggerFactory.getLogger(VentanaConsulta.class);
 
-    public VentanaConsulta(AlumnoController controller)
-    {
+    public VentanaConsulta(AlumnoController controller) {
         initComponents();
         setTitle("Consulta de alumnos");
         setSize(800, 650);
@@ -36,8 +34,7 @@ public class VentanaConsulta extends javax.swing.JFrame
         configurarIconosTabla();
         configurarMenuPestañas();
     }
-    
-    
+
     private void configurarMenuPestañas() {
         jButtonConsulta.setOpaque(true);
         jButtonConsulta.setBackground(new java.awt.Color(70, 100, 170));
@@ -58,36 +55,28 @@ public class VentanaConsulta extends javax.swing.JFrame
     }
 
 //------------------------------------------------------------------------------
-    private void permiteClickEnTabla()
-    {
-        jTableAlumnos.addMouseListener(new java.awt.event.MouseAdapter()
-        {
+    private void permiteClickEnTabla() {
+        jTableAlumnos.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int fila = jTableAlumnos.rowAtPoint(evt.getPoint());
                 int columna = jTableAlumnos.columnAtPoint(evt.getPoint());
-                if (fila == -1 || columna == -1)
-                {
+                if (fila == -1 || columna == -1) {
                     return;
                 }
                 // Ignorar filas que contienen mensajes
                 Object valor = jTableAlumnos.getValueAt(fila, 0);
-                if (valor == null || !valor.toString().matches("\\d+"))
-                {
+                if (valor == null || !valor.toString().matches("\\d+")) {
                     return;
                 }
                 // Columna 5: Más informacion
-                if (columna == 5)
-                {
+                if (columna == 5) {
                     mostrarInfo(fila);
                 } // Columna 6: Editar
-                else if (columna == 6)
-                {
+                else if (columna == 6) {
                     editarAlumno(fila);
                 } // Columa 7: Eliminar
-                else if (columna == 7)
-                {
+                else if (columna == 7) {
                     eliminarAlumno(fila);
                 }
             }
@@ -95,8 +84,7 @@ public class VentanaConsulta extends javax.swing.JFrame
     }
 //------------------------------------------------------------------------------
 
-    private void cargarCatalogo()
-    {
+    private void cargarCatalogo() {
         CatalogoController catalogo = new CatalogoController();
         List<String> carreras = new ArrayList<>(catalogo.obtenerCarrera());
         List<String> semestres = new ArrayList<>(catalogo.obtenerSemestres());
@@ -110,41 +98,31 @@ public class VentanaConsulta extends javax.swing.JFrame
     public void cargarTabla(Alumno alumno, String filtroCarrera, String filtroSemestre)
     {
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTableAlumnos.getModel();
-        //----------------------------------------------------------------------
-        // Limpia las filas anteriores
-        modelo.setRowCount(0);
-        //----------------------------------------------------------------------
-        // TABLA INICIAL (No muestra nada)
+        modelo.setRowCount(0); 
+
+        // 1. Mensaje inicial simple
         if (alumno == null && filtroCarrera == null && filtroSemestre == null)
         {
-            modelo.addRow(new Object[]
-            {
-                "Busque un alumno o consulte por filtros"
-            });
+            modelo.addRow(new Object[] {  "Busque un alumno", "", "", "", "", "", "", "" });
             return;
         }
-        //----------------------------------------------------------------------
-        // ALUMNO EN ESPECÍFICO
-        // No se encontró
+
+        // 2. No se encontró
         if (alumno == null && "INEXISTENTE".equals(filtroCarrera) && "INEXISTENTE".equals(filtroSemestre))
         {
-            modelo.addRow(new Object[]
-            {
-                "No existe el alumno buscado."
-            });
+            modelo.addRow(new Object[] { "No encontrado", "", "", "", "", "", "", "" });
             return;
         }
-        // Se encontró
+
+        // 3. Alumno encontrado
         if (alumno != null)
         {
             agregarFila(modelo, alumno);
             return;
         }
-        //----------------------------------------------------------------------
-        // Obtiene los alumnos registrados
+
+        // 4. Filtros
         List<Alumno> lista = controllerConsulta.consultaAlumnos();
-        //----------------------------------------------------------------------
-        // ALUMNOS POR FILTRO
         for (Alumno a : lista)
         {
             boolean coincideCarrera = "Todas las carreras".equals(filtroCarrera) || a.getCarrera().equals(filtroCarrera);
@@ -154,35 +132,29 @@ public class VentanaConsulta extends javax.swing.JFrame
                 agregarFila(modelo, a);
             }
         }
+
+        // 5. Sin resultados por filtro
         if (modelo.getRowCount() == 0)
         {
-            modelo.addRow(new Object[]
-            {
-                "No existen alumnos con los filtros seleccionados."
-            });
+            modelo.addRow(new Object[] { "Sin resultados", "", "", "", "", "", "", "" });
         }
     }
 
 //------------------------------------------------------------------------------
-    private void agregarFila(javax.swing.table.DefaultTableModel modelo, Alumno alumno)
-    {
-        modelo.addRow(new Object[]
-        {
+    private void agregarFila(javax.swing.table.DefaultTableModel modelo, Alumno alumno) {
+        modelo.addRow(new Object[]{
             alumno.getNoControl(),
             alumno.getNombre(),
             alumno.getCarrera(),
             alumno.getSemestre(),
-            alumno.getPromedio(),
-        });
+            alumno.getPromedio(),});
     }
 
 //------------------------------------------------------------------------------
-    private void mostrarInfo(int fila)
-    {
+    private void mostrarInfo(int fila) {
         String noControl = jTableAlumnos.getValueAt(fila, 0).toString();
         Alumno alumno = controllerConsulta.consultaPorNumControlONombre(noControl);
-        if (alumno == null)
-        {
+        if (alumno == null) {
             JOptionPane.showMessageDialog(
                     this,
                     "No se encontró al alumno.",
@@ -192,18 +164,18 @@ public class VentanaConsulta extends javax.swing.JFrame
             return;
         }
         String materiasTexto = "";
-            if (alumno.getMateriasSeleccionadas() != null) {
-                String limpia = alumno.getMateriasSeleccionadas().toString()
-                .replace("[", "")
-                .replace("]", "")
-                .trim();
+        if (alumno.getMateriasSeleccionadas() != null) {
+            String limpia = alumno.getMateriasSeleccionadas().toString()
+                    .replace("[", "")
+                    .replace("]", "")
+                    .trim();
             if (!limpia.isEmpty()) {
                 materiasTexto = "\n- " + limpia.replace(", ", "\n- ").replace(",", "\n- ");
             }
         }
         String fechaTexto = (alumno.getFechaNacimiento() != null)
-        ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(alumno.getFechaNacimiento())
-        : "";
+                ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(alumno.getFechaNacimiento())
+                : "";
         Object materias = alumno.getMateriasSeleccionadas();
         JOptionPane.showMessageDialog(this,
                 "Información adicional de " + alumno.getNombre() + "\n\n"
@@ -215,12 +187,10 @@ public class VentanaConsulta extends javax.swing.JFrame
     }
 
 //------------------------------------------------------------------------------
-    private void editarAlumno(int fila)
-    {
+    private void editarAlumno(int fila) {
         String noControl = jTableAlumnos.getValueAt(fila, 0).toString();
         Alumno alumno = controllerConsulta.consultaPorNumControlONombre(noControl);
-        if (alumno == null)
-        {
+        if (alumno == null) {
             JOptionPane.showMessageDialog(
                     this,
                     "No se encontró al alumno.",
@@ -235,8 +205,7 @@ public class VentanaConsulta extends javax.swing.JFrame
     }
 
 //------------------------------------------------------------------------------
-    private void eliminarAlumno(int fila)
-    {
+    private void eliminarAlumno(int fila) {
         //----------------------------------------------------------------------
         // CONFIRMACIÓN ANTES DE ELIMINAR AL ESTUDIANTE
         int respuesta = JOptionPane.showConfirmDialog(this,
@@ -246,8 +215,7 @@ public class VentanaConsulta extends javax.swing.JFrame
                 JOptionPane.QUESTION_MESSAGE);
         //----------------------------------------------------------------------
         // CANCELAR BAJA
-        if (respuesta != JOptionPane.YES_OPTION)
-        {
+        if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
         //----------------------------------------------------------------------
@@ -255,8 +223,7 @@ public class VentanaConsulta extends javax.swing.JFrame
         String noControl = jTableAlumnos.getValueAt(fila, 0).toString();
         Alumno alumno = controllerConsulta.consultaPorNumControlONombre(noControl);
         boolean eliminarEstudiante = controllerConsulta.eliminaAlumno(alumno);
-        if (!eliminarEstudiante)
-        {
+        if (!eliminarEstudiante) {
             JOptionPane.showMessageDialog(this,
                     "Error en la eliminación",
                     "Error",
@@ -268,9 +235,10 @@ public class VentanaConsulta extends javax.swing.JFrame
                 "Alumno eliminado",
                 JOptionPane.INFORMATION_MESSAGE);
         cargarTabla(null, null, null);
+        log.warn("ATENCIÓN: El alumno con Control: {} fue dado de baja y eliminado del sistema.", noControl);
     }
-        private void configurarIconosTabla()
-    {
+
+    private void configurarIconosTabla() {
         ImageIcon iconoInfo = new ImageIcon(getClass().getResource("/images/info32px.png"));
         ImageIcon iconoEditar = new ImageIcon(getClass().getResource("/images/edit32px.png"));
         ImageIcon iconoEliminar = new ImageIcon(getClass().getResource("/images/delete32px.png"));
@@ -297,25 +265,30 @@ public class VentanaConsulta extends javax.swing.JFrame
                 .getColumn(7)
                 .setCellRenderer(new RenderIcono(iconoEliminar));
     }
-    
+
 //------------------------------------------------------------------------------
-    private class RenderIcono extends DefaultTableCellRenderer
-    {
+    private class RenderIcono extends DefaultTableCellRenderer {
 
         private final ImageIcon icono;
 
-        public RenderIcono(ImageIcon icono)
-        {
+        public RenderIcono(ImageIcon icono) {
             this.icono = icono;
             setHorizontalAlignment(JLabel.CENTER);
         }
 
         @Override
-        public Component getTableCellRendererComponent(javax.swing.JTable tabla, Object valor, boolean seleccionado, boolean tieneFoco, int fila, int columna)
-        {
+        public Component getTableCellRendererComponent(javax.swing.JTable tabla, Object valor, boolean seleccionado, boolean tieneFoco, int fila, int columna) {
             super.getTableCellRendererComponent(tabla, valor, seleccionado, tieneFoco, fila, columna);
             setText("");
-            setIcon(icono);
+
+            // Verificar si la fila actual es un alumno real (comprobando la columna 0)
+            Object idVal = tabla.getValueAt(fila, 0);
+            if (idVal == null || idVal.toString().trim().isEmpty() || !idVal.toString().matches("\\d+")) {
+                setIcon(null); // Oculta el ícono si es un mensaje
+            } else {
+                setIcon(icono); // Muestra el ícono si es un alumno
+            }
+
             return this;
         }
     }
@@ -548,8 +521,7 @@ public class VentanaConsulta extends javax.swing.JFrame
         String busqueda = jTxtBusqueda.getText().trim();
         //----------------------------------------------------------------------
         // VALIDA CAMPO VACIO
-        if (ValidadorAlumno.esVacio(busqueda))
-        {
+        if (ValidadorAlumno.esVacio(busqueda)) {
             JOptionPane.showMessageDialog(this,
                     "Inserte un alumno a buscar.",
                     "Campo requerido",
@@ -562,8 +534,7 @@ public class VentanaConsulta extends javax.swing.JFrame
         jCbSemestre.setSelectedIndex(0);
         // COPIA ALUMNO
         Alumno alumno = controllerConsulta.consultaPorNumControlONombre(busqueda);
-        if (alumno == null)
-        {
+        if (alumno == null) {
             cargarTabla(alumno, "INEXISTENTE", "INEXISTENTE");
             return;
         }

@@ -534,6 +534,7 @@ public class VentanaEdicion extends javax.swing.JFrame
                 JOptionPane.INFORMATION_MESSAGE);
         VentanaConsulta ventana = new VentanaConsulta(controllerEdicion);
         ventana.setVisible(true);
+        log.info("Datos actualizados correctamente para el alumno con Control: {}", noControl);
         this.dispose();
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 

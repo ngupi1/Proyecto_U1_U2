@@ -1,40 +1,31 @@
 package app;
 
 import controller.AlumnoController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import views.VentanaInicio;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import javax.swing.UIManager;
 
-public class Main
-{
+public class Main {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaInicio.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String args[])
-    {
-        /* Set the Nimbu    s look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex)
-        {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+    public static void main(String args[]) {
+
+        log.info("Iniciando el Sistema de Control Escolar...");
+        try {
+            UIManager.setLookAndFeel(new FlatMacLightLaf());
+
+
+            UIManager.put("Component.focusWidth", 1);
+            UIManager.put("Button.arc", 10); // Botones ligeramente redondeados
+            UIManager.put("TextComponent.arc", 5); // Cajas de texto redondeadas
+        } catch (Exception ex) {
+            System.err.println("Error al inicializar");
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        //java.awt.EventQueue.invokeLater(() -> new VentanaInicio().setVisible(true));
-        java.awt.EventQueue.invokeLater(() ->
-        {
+        java.awt.EventQueue.invokeLater(()
+                -> {
             AlumnoController controller = new AlumnoController();
             new VentanaInicio(controller).setVisible(true);
         });
