@@ -396,10 +396,37 @@ public class VentanaAlta extends javax.swing.JFrame {
         }
         //----------------------------------------------------------------------  
         //VALIDA FECHA DE NACIMIENTO
-        if (!ValidadorAlumno.fechaValida(fechaNacimiento)) {
+        String fechaTexto = jDCFechaNac.getDateEditor()
+                .getUiComponent() instanceof javax.swing.JTextField
+                        ? ((javax.swing.JTextField) jDCFechaNac.getDateEditor()
+                                .getUiComponent()).getText().trim()
+                        : "";
+        // 1. VALIDAR FECHA OBLIGATORIA
+        if (fechaTexto.isEmpty())
+        {
             JOptionPane.showMessageDialog(this,
-                    "La fecha de nacimiento es obligatoria y no puede ser futura.",
+                    "La fecha es obligatoria.",
                     "Campo requerido",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+// 2. VALIDAR FECHA INVÁLIDA
+        if (fechaNacimiento == null)
+        {
+            JOptionPane.showMessageDialog(this,
+                    "Ingrese una fecha válida.\nFormato: dd/MM/yyyy",
+                    "Fecha incorrecta",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+// 3. VALIDAR FECHA FUTURA
+        if (!ValidadorAlumno.fechaValida(fechaNacimiento))
+        {
+            JOptionPane.showMessageDialog(this,
+                    "La fecha de nacimiento no puede ser futura.",
+                    "Fecha incorrecta",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }

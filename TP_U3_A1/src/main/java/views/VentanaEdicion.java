@@ -2,6 +2,7 @@ package views;
 
 import controller.AlumnoController;
 import controller.CatalogoController;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -68,6 +69,24 @@ public class VentanaEdicion extends javax.swing.JFrame
         jCbSemestre.setSelectedItem(alumno.getSemestre());
         jTxtPromedio.setText(String.valueOf(alumno.getPromedio()));
         jDCFechaNac.setDate(alumno.getFechaNacimiento());
+        List<String> materiasAlumno = alumno.getMateriasSeleccionadas();
+        List<Integer> indices = new ArrayList<>();
+ 
+	for (String materia : materiasAlumno) {
+		int posicion = jListMaterias.getModel().getSize(); //Te da acceso al modelo de datos
+		for (int i = 0; i < jListMaterias.getModel().getSize(); i++) {
+			if (jListMaterias.getModel().getElementAt(i).equals(materia)) {
+				indices.add(i);
+				break;
+			}
+			}
+		}
+        int[] indicesArray = new int[indices.size()];
+	for (int i = 0; i < indices.size(); i++) {
+		indicesArray[i] = indices.get(i);
+	}
+ 
+	jListMaterias.setSelectedIndices(indicesArray);        
     }
 
     @SuppressWarnings("unchecked")
@@ -450,11 +469,37 @@ public class VentanaEdicion extends javax.swing.JFrame
         }
         //----------------------------------------------------------------------  
         //VALIDA FECHA DE NACIMIENTO
+        String fechaTexto = jDCFechaNac.getDateEditor()
+                .getUiComponent() instanceof javax.swing.JTextField
+                        ? ((javax.swing.JTextField) jDCFechaNac.getDateEditor()
+                                .getUiComponent()).getText().trim()
+                        : "";
+        // 1. VALIDAR FECHA OBLIGATORIA
+        if (fechaTexto.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,
+                    "La fecha es obligatoria.",
+                    "Campo requerido",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+// 2. VALIDAR FECHA INVÁLIDA
+        if (fechaNacimiento == null)
+        {
+            JOptionPane.showMessageDialog(this,
+                    "Ingrese una fecha válida.\nFormato: dd/MM/yyyy",
+                    "Fecha incorrecta",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+// 3. VALIDAR FECHA FUTURA
         if (!ValidadorAlumno.fechaValida(fechaNacimiento))
         {
             JOptionPane.showMessageDialog(this,
-                    "La fecha de nacimiento es obligatoria y no puede ser futura.",
-                    "Campo requerido",
+                    "La fecha de nacimiento no puede ser futura.",
+                    "Fecha incorrecta",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
